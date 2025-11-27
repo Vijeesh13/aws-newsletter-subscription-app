@@ -1,0 +1,36 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Newsletter Subscription App
+
+Globals:
+  Function:
+    Runtime: python3.11
+    Timeout: 10
+
+Resources:
+  NewsletterTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: newsletter-topic
+
+  NewsletterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.lambda_handler
+      CodeUri: .
+      Environment:
+        Variables:
+          TOPIC_ARN: !Ref NewsletterTopic
+      Policies:
+        - SNSCrudPolicy:
+            TopicName: newsletter-topic
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /subscribe
+            Method: post
+
+Outputs:
+  ApiEndpoint:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/subscribe"
