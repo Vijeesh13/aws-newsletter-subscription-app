@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.env
+.aws-sam/
+.sam-cache/
+build/
+dist/
+.DS_Store
